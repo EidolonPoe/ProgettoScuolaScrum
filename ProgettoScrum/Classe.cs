@@ -11,4 +11,5 @@ public class Classe
     public int IdClasse { get; set; }
     public int Anno { get; set; }
     public string Sezione { get; set; }
+    public List<Studente> Studenti { get; set; }
 }
