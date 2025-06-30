@@ -10,4 +10,5 @@ public class Voto
 {
     public int valore { get; set; }
     public string materia { get; set; }
+    public DateTime data { get; set; }
 }
