@@ -8,7 +8,7 @@ namespace ProgettoScrum
 {
     public class Studente
     {
-        public string Matricola { get; set; }
+        public string Id { get; set; }
 
         public string Nome { get; set; }
 
@@ -16,6 +16,8 @@ namespace ProgettoScrum
         public string Cognome { get; set; }
 
         public int DataNascita { get; set; }
+
+        public List<Voto> Voti { get; set; }
 
         public  int  IdClasse { get; set; }
 
