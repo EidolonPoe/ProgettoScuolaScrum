@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace ProgettoScrum.Repositories.Interfaces
 {
-    internal class IClasseRepository
+    public class IClasseRepository
     {
+        void Add(Classe classe);
+        List<Classe>GetAll();
+        void Remove(int idClasse);
+        void Modify(Classe classe);
+
     }
 }
