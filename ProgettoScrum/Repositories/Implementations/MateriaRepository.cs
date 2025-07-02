@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ProgettoScrum.Repositories.Implementations;
 
-public class MateriaRepository
+public class MateriaRepository : IMateriaRepository
 {
     public readonly string ConnectionString;
     public MateriaRepository(string connectionString)
