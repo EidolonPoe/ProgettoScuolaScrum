@@ -8,9 +8,9 @@ namespace ProgettoScrum.Repositories.Interfaces
 {
     public interface IMateriaRepository
     {
-        void Add(Classe classe);
-        List<Classe> GetAll();
-        void Remove(int idClasse);
-        void Modify(Classe classe);
+        void Add(Materia materia);
+        List<Materia> GetAll();
+        void Remove(int idMateria);
+        void Modify(Materia materia);
     }
 }
