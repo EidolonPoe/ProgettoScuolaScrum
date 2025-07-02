@@ -15,7 +15,7 @@ namespace ProgettoScrum
 
         public string Cognome { get; set; }
 
-        public int DataNascita { get; set; }
+        public DateTime DataNascita { get; set; }
 
         public List<Voto> Voti { get; set; }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProgettoScrum.Repositories.Interfaces
 {
-    public interface IVotoRepositorycs
+    public interface IVotoRepository
     {
 
         void Add(Voto voto);
