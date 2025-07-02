@@ -19,39 +19,60 @@ namespace ProgettoScrum.Repositories.Implementations
             ConnectionString = connectionString;
         }
 
-        public void Add(List<Studente> studenti)
+        public void Add(Classe classe)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
 
-                foreach (var studente in studenti)
-                {
-                    string query = @"
-                INSERT INTO Studenti (Nome, Cognome, IdClasse)
-                VALUES (@Nome, @Cognome, @IdClasse)";
+            string query = "INSERT INTO Classi (Anno, Sezione) VALUES (@Anno, @Sezione)";
+            using var command = new SqlCommand(query, connection);
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@Nome", studente.Nome);
-                        command.Parameters.AddWithValue("@Cognome", studente.Cognome);
-                        command.Parameters.AddWithValue("@IdClasse", studente.IdClasse);
+            command.Parameters.AddWithValue("@Anno", classe.Anno);
+            command.Parameters.AddWithValue("@Sezione", classe.Sezione);
 
-                        try
-                        {
-                            command.ExecuteNonQuery();
-                            Console.WriteLine($"Inserito: {studente.Nome} {studente.Cognome}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Errore inserendo {studente.Nome} {studente.Cognome}: {ex.Message}");
-                        }
-                    }
-                }
-            }
+            command.ExecuteNonQuery();
         }
 
-    }
+        public List<Classe> GetAll()
+        {
+            var classi = new List<Classe>();
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            string query = "SELECT IdClasse, Anno, Sezione FROM Classi";
+            using var command = new SqlCommand(query, connection);
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                classi.Add(new Classe
+                {
+                    IdClasse = reader.GetInt32(0),
+                    Anno = reader.GetInt32(1),
+                    Sezione = reader.GetString(2)
+                });
+            }
+            return classi;
+        }
 
+        public void Remove(int id)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            string query = "DELETE FROM Classi WHERE IdClasse = @IdClasse";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@IdClasse", id);
+            command.ExecuteNonQuery();
+        }
+
+        public void Modify(Classe classe)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            string query = "UPDATE Classi SET Anno = @Anno, Sezione = @Sezione WHERE IdClasse = @IdClasse";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Anno", classe.Anno);
+            command.Parameters.AddWithValue("@Sezione", classe.Sezione);
+            command.Parameters.AddWithValue("@IdClasse", classe.IdClasse);
+            command.ExecuteNonQuery();
+        }
     }
 }
