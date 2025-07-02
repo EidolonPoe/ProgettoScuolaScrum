@@ -8,7 +8,7 @@ namespace ProgettoScrum
 {
     public class Studente
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Nome { get; set; }
 
