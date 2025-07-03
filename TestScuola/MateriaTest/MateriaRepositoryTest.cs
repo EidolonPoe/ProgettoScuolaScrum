@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace TestScuola
 {
-    public class MateriaRepositoryTest //: IMateriaRepository
+    public class MateriaRepositoryTest : IMateriaRepository
     {
         private readonly List<Materia> _materie = new();
+        private int _nextId = 1;
 
-        public void Add(Materia materia)
+        public int Add(Materia materia)
         {
+            materia.IdMateria = _nextId++;
             _materie.Add(materia);
+            return materia.IdMateria;
         }
 
         public void Modify(Materia materia)
@@ -34,6 +37,7 @@ namespace TestScuola
 
         public List<Materia> GetAll()
         {
+            // Ritorna una copia per evitare modifiche esterne
             return new List<Materia>(_materie);
         }
     }
