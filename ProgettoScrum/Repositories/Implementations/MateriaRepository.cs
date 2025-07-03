@@ -10,32 +10,67 @@ public class MateriaRepository : IMateriaRepository
     {
         ConnectionString = connectionString;
     }
-    public void Add(Materia materia)
+    //public void Add(Materia materia)
+    //{
+    //    //using var connection = new SqlConnection(ConnectionString);
+    //    //connection.Open();
+    //    //string query = "INSERT INTO Materie (IdMateria, Nome) VALUES (@IdMateria, @Nome)";
+    //    //using var command = new SqlCommand(query, connection);
+    //    //command.Parameters.AddWithValue("@IdMateria", materia.IdMateria);
+    //    //command.Parameters.AddWithValue("@Nome", materia.Nome);
+    //    //command.ExecuteNonQuery();
+    //    try
+    //    {
+    //        using var connection = new SqlConnection(ConnectionString);
+    //        connection.Open();
+
+    //        string query = "INSERT INTO Materie (Nome) VALUES (@Nome)";
+    //        using var command = new SqlCommand(query, connection);
+
+    //        command.Parameters.AddWithValue("@Nome", materia.Nome);
+
+    //        int rowsAffected = command.ExecuteNonQuery();
+    //        if (rowsAffected == 0)
+    //            throw new Exception("Inserimento non riuscito.");
+    //    }
+    //    catch (SqlException ex)
+    //    {
+    //        throw new Exception("Errore durante l'inserimento della materia nel database.", ex);
+    //    }
+    //}
+
+    public int Add(Materia materia)
     {
-        //using var connection = new SqlConnection(ConnectionString);
-        //connection.Open();
-        //string query = "INSERT INTO Materie (IdMateria, Nome) VALUES (@IdMateria, @Nome)";
-        //using var command = new SqlCommand(query, connection);
-        //command.Parameters.AddWithValue("@IdMateria", materia.IdMateria);
-        //command.Parameters.AddWithValue("@Nome", materia.Nome);
-        //command.ExecuteNonQuery();
+
         try
         {
             using var connection = new SqlConnection(ConnectionString);
             connection.Open();
 
-            string query = "INSERT INTO Materie (Nome) VALUES (@Nome)";
-            using var command = new SqlCommand(query, connection);
+            
+            string queryCheck = "SELECT IdMateria FROM Materie WHERE Nome = @Nome";
+            using var cmdCheck = new SqlCommand(queryCheck, connection);
+            cmdCheck.Parameters.AddWithValue("@Nome", materia.Nome);
+            var existingId = cmdCheck.ExecuteScalar();
 
-            command.Parameters.AddWithValue("@Nome", materia.Nome);
-
-            int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected == 0)
-                throw new Exception("Inserimento non riuscito.");
+            if (existingId != null)
+            {
+                
+                return Convert.ToInt32(existingId);
+            }
+            else
+            {
+                
+                string queryInsert = "INSERT INTO Materie (Nome) VALUES (@Nome); SELECT CAST(SCOPE_IDENTITY() AS int)";
+                using var insertCmd = new SqlCommand(queryInsert, connection);
+                insertCmd.Parameters.AddWithValue("@Nome", materia.Nome);
+                var newId = insertCmd.ExecuteScalar();
+                return Convert.ToInt32(newId);
+            }
         }
         catch (SqlException ex)
         {
-            throw new Exception("Errore durante l'inserimento della materia nel database.", ex);
+            throw new Exception("Errore durante l'inserimento della materia.", ex);
         }
     }
 
