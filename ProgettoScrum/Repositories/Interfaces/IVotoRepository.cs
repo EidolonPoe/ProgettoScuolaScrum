@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProgettoScrum.Repositories.Dto;
 
 namespace ProgettoScrum.Repositories.Interfaces
 {
@@ -14,6 +15,7 @@ namespace ProgettoScrum.Repositories.Interfaces
         void Remove(int idVoto);
         void Modify(Voto voto);
         Voto? GetById(int id);
+        List<VotoMateriaDto> GetVotiConMateriaPerStudente(int studenteId);
 
 
     }

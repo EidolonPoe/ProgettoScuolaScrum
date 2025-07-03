@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using ProgettoScrum.Repositories.Dto;
 using ProgettoScrum.Repositories.Interfaces;
 
 namespace ProgettoScrum.Repositories.Implementations
@@ -176,7 +177,7 @@ namespace ProgettoScrum.Repositories.Implementations
                     return new Voto
                     {
                         Id = reader.GetInt32(0),
-                        Valore = (float)reader.GetDouble(1), 
+                        Valore = (float)reader.GetDouble(1),
                         StudenteId = reader.GetInt32(2),
                         MateriaId = reader.GetInt32(3),
                         Data = reader.GetDateTime(4)
@@ -192,6 +193,39 @@ namespace ProgettoScrum.Repositories.Implementations
 
 
 
+        }
+
+        public List<VotoMateriaDto> GetVotiConMateriaPerStudente(int studenteId)
+        {
+            var votiConMateria = new List<VotoMateriaDto>();
+
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            string query = @"
+                            SELECT v.Id, v.Valore, v.Data, v.StudenteId, v.MateriaId, m.Nome AS NomeMateria
+                            FROM Voti v
+                            INNER JOIN Materie m ON v.MateriaId = m.IdMateria
+                            WHERE v.StudenteId = @StudenteId";
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@StudenteId", studenteId);
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                votiConMateria.Add(new VotoMateriaDto
+                {
+                    Id = reader.GetInt32(0),
+                    Valore = (float)reader.GetDouble(1),  
+                    Data = reader.GetDateTime(2),
+                    StudenteId = reader.GetInt32(3),
+                    MateriaId = reader.GetInt32(4),
+                    NomeMateria = reader.GetString(5)
+                });
+            }
+
+            return votiConMateria;
         }
     }
 }
