@@ -25,6 +25,7 @@ public class Program
             Console.WriteLine("3. Gestisci Materie");
             Console.WriteLine("4. Gestisci Voti");
             Console.WriteLine("5. Esci");
+            Console.WriteLine("Inserisci un'opzione:");
 
             var input = Console.ReadLine();
             switch (input)
@@ -64,6 +65,7 @@ public class Program
             Console.WriteLine("3. Rimuovi una classe");
             Console.WriteLine("4. Modifica una classe");
             Console.WriteLine("5. Torna al menu principale");
+            Console.WriteLine("Inserisci un'opzione:");
 
             var classeInput = Console.ReadLine();
             switch (classeInput)
@@ -140,6 +142,7 @@ public class Program
             Console.WriteLine("3. Rimuovi uno studente");
             Console.WriteLine("4. Modifica uno studente");
             Console.WriteLine("5. Torna al menu principale");
+            Console.WriteLine("Inserisci un'opzione:");
 
             var input = Console.ReadLine();
             switch (input)
@@ -224,6 +227,7 @@ public class Program
             Console.WriteLine("3. Rimuovi una materia");
             Console.WriteLine("4. Modifica una materia");
             Console.WriteLine("5. Torna al menu principale");
+            Console.WriteLine("Inserisci un'opzione:");
 
             var input = Console.ReadLine();
             switch (input)
@@ -297,6 +301,7 @@ public class Program
             Console.WriteLine("3. Rimuovi un voto");
             Console.WriteLine("4. Modifica un voto");
             Console.WriteLine("5. Torna al menu principale");
+            Console.WriteLine("Inserisci un'opzione:");
 
             var input = Console.ReadLine();
             switch (input)
