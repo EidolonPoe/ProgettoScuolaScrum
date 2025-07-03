@@ -13,6 +13,7 @@ namespace ProgettoScrum.Repositories.Interfaces
         List<Voto> GetAll();
         void Remove(int idVoto);
         void Modify(Voto voto);
+        Voto? GetById(int id);
 
 
     }

@@ -12,5 +12,6 @@ namespace ProgettoScrum.Repositories.Interfaces
         List<Classe> GetAll();
         void Remove(int id);
         void Modify(Classe classe);
+        Classe? GetById(int id);
     }
 }
