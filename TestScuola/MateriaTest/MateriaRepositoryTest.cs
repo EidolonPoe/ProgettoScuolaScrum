@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace TestScuola
 {
-    public class MateriaRepositoryTest : IMateriaRepository
+    public class MateriaRepositoryTest //: IMateriaRepository
     {
         private readonly List<Materia> _materie = new();
 

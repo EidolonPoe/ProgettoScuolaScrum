@@ -1,71 +1,71 @@
-﻿using ProgettoScrum;
-using ProgettoScrum.Repositories.Interfaces;
+﻿using ProgettoScrum.Repositories.Interfaces;
+using ProgettoScrum;
 
-namespace TestScuola.ClasseTest
+[TestClass]
+public sealed class TestClasse
 {
-    [TestClass]
-    public sealed class TestClasse
+    private IClasseRepository _repository;
+
+    [TestInitialize]
+    public void Setup()
     {
-        private IClasseRepository _repository;
+        _repository = new ClasseRepositoryTest(); // il fake implementa IClasseRepository
+    }
 
-        [TestInitialize]
-        public void Setup()
-        {
-            _repository = new ClasseRepositoryTest();
-        }
+    [TestMethod]
+    public void AddClasse()
+    {
+        var classe = new Classe { Anno = 2025, Sezione = "A" };
+        _repository.Add(classe);
 
-        [TestMethod]
-        public void AddClasse()
-        {
-            var classe = new Classe { IdClasse = 1, Anno = 2025, Sezione = "A" };
-            _repository.Add(classe);
+        var all = _repository.GetAll();
+        Assert.AreEqual(1, all.Count);
 
-            var result = _repository.GetAll();
+        var first = all[0];
+        Assert.AreEqual(2025, first.Anno);
+        Assert.AreEqual("A", first.Sezione);
 
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(classe.IdClasse, result[0].IdClasse);
-            Assert.AreEqual(classe.Anno, result[0].Anno);
-            Assert.AreEqual(classe.Sezione, result[0].Sezione);
-        }
+        var byId = _repository.GetById(first.IdClasse);
+        Assert.IsNotNull(byId);
+        Assert.AreEqual(first.IdClasse, byId!.IdClasse);
+    }
 
-        [TestMethod]
-        public void ModifyClasse()
-        {
-            var classe = new Classe { IdClasse = 2, Anno = 2024, Sezione = "C" };
-            _repository.Add(classe);
+    [TestMethod]
+    public void ModifyClasse()
+    {
+        var classe = new Classe { IdClasse = 2, Anno = 2024, Sezione = "C" };
+        _repository.Add(classe);
 
-            var updated = new Classe { IdClasse = 2, Anno = 2025, Sezione = "D" };
-            _repository.Modify(updated);
+        var updated = new Classe { IdClasse = 2, Anno = 2025, Sezione = "D" };
+        _repository.Modify(updated);
 
-            var result = _repository.GetAll()[0];
+        var result = _repository.GetById(2);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2025, result!.Anno);
+        Assert.AreEqual("D", result.Sezione);
+    }
 
-            Assert.AreEqual(2025, result.Anno);
-            Assert.AreEqual("D", result.Sezione);
-        }
+    [TestMethod]
+    public void CancelClasse()
+    {
+        var classe = new Classe { IdClasse = 3, Anno = 2025, Sezione = "B" };
+        _repository.Add(classe);
 
-        [TestMethod]
-        public void CancelClasse()
-        {
-            var classe = new Classe { IdClasse = 3, Anno = 2025, Sezione = "B" };
-            _repository.Add(classe);
-            _repository.Remove(36);
+        _repository.Remove(3);
 
-            var result = _repository.GetAll();
+        var all = _repository.GetAll();
+        Assert.AreEqual(0, all.Count);
+    }
 
-            Assert.AreEqual(0, result.Count);
-        }
+    [TestMethod]
+    public void ViewClasse()
+    {
+        var classe1 = new Classe { IdClasse = 4, Anno = 2023, Sezione = "A" };
+        var classe2 = new Classe { IdClasse = 5, Anno = 2024, Sezione = "B" };
+        _repository.Add(classe1);
+        _repository.Add(classe2);
 
-        [TestMethod]
-        public void ViewClasse()
-        {
-            var classe1 = new Classe { IdClasse = 4, Anno = 2023, Sezione = "A" };
-            var classe2 = new Classe { IdClasse = 5, Anno = 2024, Sezione = "B" };
-            _repository.Add(classe1);
-            _repository.Add(classe2);
-
-            var result = _repository.GetAll();
-
-            Assert.AreEqual(2, result.Count);
-        }
+        var all = _repository.GetAll();
+        Assert.AreEqual(2, all.Count);
     }
 }
