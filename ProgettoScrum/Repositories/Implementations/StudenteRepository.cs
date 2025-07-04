@@ -198,4 +198,40 @@ public class StudenteRepository : IStudenteRepository
             throw new Exception($"Errore durante il recupero dello studente con Id {id}.", ex);
         }
     }
+
+    public List<Studente> GetByClasse(int idClasse)
+    {
+        var studenti = new List<Studente>();
+
+        try
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            string query = "SELECT Id, Nome, Cognome, DataNascita, IdClasse FROM Studenti WHERE IdClasse = @IdClasse";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@IdClasse", idClasse);
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                studenti.Add(new Studente
+                {
+                    Id = reader.GetInt32(0),
+                    Nome = reader.GetString(1),
+                    Cognome = reader.GetString(2),
+                    DataNascita = reader.GetDateTime(3),
+                    IdClasse = reader.GetInt32(4)
+                });
+            }
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception("Errore durante il recupero degli studenti per la classe.", ex);
+        }
+
+        return studenti;
+    }
+
 }

@@ -4,375 +4,414 @@
 
 using ProgettoScrum;
 using ProgettoScrum.Repositories.Implementations;
-using ProgettoScrum.Repositories.Interfaces;
 
 public class Program
 {
     static void Main(string[] args)
     {
-        string connectionString = "your_connection_string_here";
-        var classeRepository = new ClasseRepository(connectionString);
-        var studenteRepository = new StudenteRepository(connectionString);
-        var materiaRepository = new MateriaRepository(connectionString);
-        var votoRepository = new VotoRepository(connectionString);
 
-        bool running = true;
-        while (running)
+        var connectionString = "Server = localhost\\SQLEXPRESS; Database = DbTest; Trusted_Connection = True;Encrypt=False;";
+
+        var classeRepo = new ClasseRepository(connectionString);
+        var studenteRepo = new StudenteRepository(connectionString);
+        var materiaRepo = new MateriaRepository(connectionString);
+        var votoRepo = new VotoRepository(connectionString);
+
+        while (true)
         {
-            Console.WriteLine("\n--- MENU ---");
-            Console.WriteLine("1 Gestisci Classe");
-            Console.WriteLine("2. Gestisci Studenti");
-            Console.WriteLine("3. Gestisci Materie");
-            Console.WriteLine("4. Gestisci Voti");
-            Console.WriteLine("5. Esci");
-            Console.WriteLine("Inserisci un'opzione:");
+            Console.Clear();
+            Console.WriteLine("===== MENU PRINCIPALE =====");
+            Console.WriteLine("1. Gestione Classi");
+            Console.WriteLine("2. Gestione Materie");
+            Console.WriteLine("0. Esci");
+            Console.Write("Scelta: ");
 
-            var input = Console.ReadLine();
-            switch (input)
+            var scelta = Console.ReadLine();
+            try
             {
-
-                case "1":
-                    GestisciClassi(classeRepository);
-                    break;
-                case "2":
-                    GestisciStudenti(studenteRepository);
-                    break;
-                case "3":
-                    GestisciMaterie(materiaRepository);
-                    break;
-                case "4":
-                    GestisciVoti(votoRepository);
-                    break;
-                case "5":
-                    running = false;
-                    break;
-                default:
-                    Console.WriteLine("Opzione non valida. Riprova.");
-                    break;
+                switch (scelta)
+                {
+                    case "1":
+                        GestisciClassi(classeRepo, studenteRepo, votoRepo, materiaRepo);
+                        break;
+                    case "2":
+                        GestisciMaterie(materiaRepo);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Scelta non valida.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            Console.WriteLine("Premi un tasto per continuare...");
+            Console.ReadKey();
         }
-        Console.WriteLine("Arrivederci!");
     }
 
-    // Esempio di funzione per la gestione delle classi
-    static void GestisciClassi(ClasseRepository repository)
+    static void GestisciClassi(ClasseRepository classeRepo, StudenteRepository studenteRepo, VotoRepository votoRepo, MateriaRepository materiaRepo)
     {
         while (true)
         {
-            Console.WriteLine("\n--- Gestione Classe ---");
-            Console.WriteLine("1. Aggiungi una classe");
-            Console.WriteLine("2. Visualizza tutte le classi");
-            Console.WriteLine("3. Rimuovi una classe");
-            Console.WriteLine("4. Modifica una classe");
-            Console.WriteLine("5. Torna al menu principale");
-            Console.WriteLine("Inserisci un'opzione:");
+            Console.Clear();
+            Console.WriteLine("===== GESTIONE CLASSI =====");
+            Console.WriteLine("1. Visualizza Classi");
+            Console.WriteLine("2. Aggiungi Classe");
+            Console.WriteLine("3. Modifica Classe");
+            Console.WriteLine("4. Elimina Classe");
+            Console.WriteLine("5. Seleziona Classe per Gestione Studenti");
+            Console.WriteLine("0. Torna al menu principale");
+            Console.Write("Scelta: ");
 
-            var classeInput = Console.ReadLine();
-            switch (classeInput)
+            var scelta = Console.ReadLine();
+            try
             {
-                case "1":
-                    Console.WriteLine("Inserisci l'anno della classe:");
-                    int anno = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Inserisci la sezione della classe:");
-                    string sezione = Console.ReadLine();
-                    var nuovaClasse = new Classe { Anno = anno, Sezione = sezione, Studenti = new List<Studente>() };
-                    repository.Add(nuovaClasse);
-                    Console.WriteLine("Classe aggiunta con successo.");
-                    break;
-                case "2":
-                    var classi = repository.GetAll();
-                    Console.WriteLine("Elenco delle classi:");
-                    foreach (var classe in classi)
-                    {
-                        Console.WriteLine($"ID: {classe.IdClasse}, Anno: {classe.Anno}, Sezione: {classe.Sezione}");
-                    }
-                    break;
-                case "3":
-                    Console.WriteLine("Inserisci l'ID della classe da rimuovere:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaRimuovere))
-                    {
-                        repository.Remove(idDaRimuovere);
-                        Console.WriteLine("Classe rimossa con successo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "4":
-                    Console.WriteLine("Inserisci l'ID della classe da modificare:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaModificare))
-                    {
-                        var classeDaModificare = repository.GetAll().FirstOrDefault(c => c.IdClasse == idDaModificare);
-                        if (classeDaModificare != null)
+                switch (scelta)
+                {
+                    case "1":
+                        var classi = classeRepo.GetAll();
+                        if (classi.Count == 0)
                         {
-                            Console.WriteLine("Inserisci il nuovo anno:");
-                            classeDaModificare.Anno = int.Parse(Console.ReadLine());
-                            Console.WriteLine("Inserisci la nuova sezione:");
-                            classeDaModificare.Sezione = Console.ReadLine();
-                            repository.Modify(classeDaModificare);
-                            Console.WriteLine("Classe modificata con successo.");
+                            Console.WriteLine(" Nessuna classe trovata nel sistema.");
                         }
                         else
+                        {
+                            foreach (var c in classi)
+                                Console.WriteLine($"Id: {c.IdClasse}, Anno: {c.Anno} Sezione: {c.Sezione}");
+                        }
+                        break;
+
+                    case "2":
+                        Console.Write("Anno: ");
+                        var anno = int.Parse(Console.ReadLine());
+                        Console.Write("Sezione: ");
+                        var sezione = Console.ReadLine();
+                        classeRepo.Add(new Classe { Anno = anno, Sezione = sezione });
+                        Console.WriteLine("Classe aggiunta con successo.");
+                        break;
+                    case "3":
+                        Console.Write("Id Classe da modificare: ");
+                        var idMod = int.Parse(Console.ReadLine());
+                        Console.Write("Nuovo Anno: ");
+                        var annoMod = int.Parse(Console.ReadLine());
+                        Console.Write("Nuova Sezione: ");
+                        var sezMod = Console.ReadLine();
+                        classeRepo.Modify(new Classe { IdClasse = idMod, Anno = annoMod, Sezione = sezMod });
+                        Console.WriteLine("Classe modificata.");
+                        break;
+                    case "4":
+                        Console.Write("Id Classe da eliminare: ");
+                        var idElim = int.Parse(Console.ReadLine());
+                        Console.WriteLine("ATTENZIONE: L'eliminazione della classe comporterà la cancellazione di tutti gli studenti e voti associati. Continuare? (s/n)");
+                        var conferma = Console.ReadLine();
+                        if (conferma?.ToLower() == "s")
+                        {
+                            classeRepo.Remove(idElim);
+                            Console.WriteLine("Classe eliminata.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Eliminazione annullata.");
+                        }
+                        break;
+                    case "5":
+                        Console.Write("Id Classe da selezionare: ");
+                        var idSel = int.Parse(Console.ReadLine());
+                        var classe = classeRepo.GetById(idSel);
+                        if (classe == null)
                         {
                             Console.WriteLine("Classe non trovata.");
+                            break;
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "5":
-                    return;
-                default:
-                    Console.WriteLine("Opzione non valida. Riprova.");
-                    break;
+                        GestisciStudenti(studenteRepo, votoRepo, materiaRepo, classe);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Scelta non valida.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            Console.WriteLine("Premi un tasto per continuare...");
+            Console.ReadKey();
         }
     }
 
-    static void GestisciStudenti(StudenteRepository repository)
+    static void GestisciMaterie(MateriaRepository materiaRepo)
     {
         while (true)
         {
-            Console.WriteLine("\n--- Gestione Studenti ---");
-            Console.WriteLine("1. Aggiungi uno studente");
-            Console.WriteLine("2. Visualizza tutti gli studenti");
-            Console.WriteLine("3. Rimuovi uno studente");
-            Console.WriteLine("4. Modifica uno studente");
-            Console.WriteLine("5. Torna al menu principale");
-            Console.WriteLine("Inserisci un'opzione:");
+            Console.Clear();
+            Console.WriteLine("===== GESTIONE MATERIE =====");
+            Console.WriteLine("1. Visualizza Materie");
+            Console.WriteLine("2. Aggiungi Materia");
+            Console.WriteLine("3. Modifica Materia");
+            Console.WriteLine("4. Elimina Materia");
+            Console.WriteLine("0. Torna al menu principale");
+            Console.Write("Scelta: ");
 
-            var input = Console.ReadLine();
-            switch (input)
+            var scelta = Console.ReadLine();
+            try
             {
-                case "1":
-                    Console.WriteLine("Nome:");
-                    string nome = Console.ReadLine();
-                    Console.WriteLine("Cognome:");
-                    string cognome = Console.ReadLine();
-                    Console.WriteLine("Data di nascita (yyyy-MM-dd):");
-                    DateTime dataNascita = DateTime.Parse(Console.ReadLine());
-                    Console.WriteLine("IdClasse:");
-                    int idClasse = int.Parse(Console.ReadLine());
-                    var nuovoStudente = new Studente { Nome = nome, Cognome = cognome, DataNascita = dataNascita, IdClasse = idClasse, Voti = new List<Voto>() };
-                    repository.Add(nuovoStudente);
-                    Console.WriteLine("Studente aggiunto con successo.");
-                    break;
-                case "2":
-                    var studenti = repository.GetAll();
-                    Console.WriteLine("Elenco degli studenti:");
-                    foreach (var studente in studenti)
-                    {
-                        Console.WriteLine($"ID: {studente.Id}, Nome: {studente.Nome}, Cognome: {studente.Cognome}, DataNascita: {studente.DataNascita:yyyy-MM-dd}, IdClasse: {studente.IdClasse}");
-                    }
-                    break;
-                case "3":
-                    Console.WriteLine("Inserisci l'ID dello studente da rimuovere:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaRimuovere))
-                    {
-                        repository.Remove(idDaRimuovere);
-                        Console.WriteLine("Studente rimosso con successo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "4":
-                    Console.WriteLine("Inserisci l'ID dello studente da modificare:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaModificare))
-                    {
-                        var studenteDaModificare = repository.GetById(idDaModificare);
-                        if (studenteDaModificare != null)
+                switch (scelta)
+                {
+                    case "1":
+                        var materie = materiaRepo.GetAll();
+                        if(materie.Count == 0)
                         {
-                            Console.WriteLine("Nuovo nome:");
-                            studenteDaModificare.Nome = Console.ReadLine();
-                            Console.WriteLine("Nuovo cognome:");
-                            studenteDaModificare.Cognome = Console.ReadLine();
-                            Console.WriteLine("Nuova data di nascita (yyyy-MM-dd):");
-                            studenteDaModificare.DataNascita = DateTime.Parse(Console.ReadLine());
-                            Console.WriteLine("Nuovo IdClasse:");
-                            studenteDaModificare.IdClasse = int.Parse(Console.ReadLine());
-                            repository.Modify(studenteDaModificare);
-                            Console.WriteLine("Studente modificato con successo.");
+                            Console.WriteLine("Non sono ancora presenti materie nel sistema");
                         }
                         else
                         {
-                            Console.WriteLine("Studente non trovato.");
+                            foreach (var m in materie)
+                                Console.WriteLine($"Id: {m.IdMateria}, Nome: {m.Nome}");
+
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "5":
-                    return;
-                default:
-                    Console.WriteLine("Opzione non valida. Riprova.");
-                    break;
+                        break;
+                    case "2":
+                        Console.Write("Nome nuova materia: ");
+                        var nome = Console.ReadLine();
+                        materiaRepo.Add(new Materia { Nome = nome });
+                        Console.WriteLine("Materia aggiunta con successo.");
+                        break;
+                    case "3":
+                        Console.Write("Id materia da modificare: ");
+                        var idMod = int.Parse(Console.ReadLine());
+                        Console.Write("Nuovo nome: ");
+                        var nuovoNome = Console.ReadLine();
+                        materiaRepo.Modify(new Materia { IdMateria = idMod, Nome = nuovoNome });
+                        Console.WriteLine("Materia modificata.");
+                        break;
+                    case "4":
+                        Console.Write("Id materia da eliminare: ");
+                        var idElim = int.Parse(Console.ReadLine());
+                        Console.WriteLine("ATTENZIONE: L'eliminazione della materia comporterà la cancellazione dei voti associati. Continuare? (s/n)");
+                        var conferma = Console.ReadLine();
+                        if (conferma?.ToLower() == "s")
+                        {
+                            materiaRepo.Remove(idElim);
+                            Console.WriteLine("Materia eliminata.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Eliminazione annullata.");
+                        }
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Scelta non valida.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            Console.WriteLine("Premi un tasto per continuare...");
+            Console.ReadKey();
         }
     }
 
-    static void GestisciMaterie(MateriaRepository repository)
+    static void GestisciStudenti(StudenteRepository studenteRepo, VotoRepository votoRepo, MateriaRepository materiaRepo, Classe classe)
     {
         while (true)
         {
-            Console.WriteLine("\n--- Gestione Materie ---");
-            Console.WriteLine("1. Aggiungi una materia");
-            Console.WriteLine("2. Visualizza tutte le materie");
-            Console.WriteLine("3. Rimuovi una materia");
-            Console.WriteLine("4. Modifica una materia");
-            Console.WriteLine("5. Torna al menu principale");
-            Console.WriteLine("Inserisci un'opzione:");
+            Console.Clear();
+            Console.WriteLine($"===== GESTIONE STUDENTI - Classe {classe.Anno} {classe.Sezione} =====");
+            Console.WriteLine("1. Visualizza Studenti");
+            Console.WriteLine("2. Aggiungi Studente");
+            Console.WriteLine("3. Modifica Studente");
+            Console.WriteLine("4. Elimina Studente");
+            Console.WriteLine("5. Seleziona Studente per Gestione Voti");
+            Console.WriteLine("0. Torna indietro");
+            Console.Write("Scelta: ");
 
-            var input = Console.ReadLine();
-            switch (input)
+            var scelta = Console.ReadLine();
+            try
             {
-                case "1":
-                    Console.WriteLine("Nome materia:");
-                    string nome = Console.ReadLine();
-                    var nuovaMateria = new Materia { Nome = nome };
-                    repository.Add(nuovaMateria);
-                    Console.WriteLine("Materia aggiunta con successo.");
-                    break;
-                case "2":
-                    var materie = repository.GetAll();
-                    Console.WriteLine("Elenco delle materie:");
-                    foreach (var materia in materie)
-                    {
-                        Console.WriteLine($"ID: {materia.IdMateria}, Nome: {materia.Nome}");
-                    }
-                    break;
-                case "3":
-                    Console.WriteLine("Inserisci l'ID della materia da rimuovere:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaRimuovere))
-                    {
-                        repository.Remove(idDaRimuovere);
-                        Console.WriteLine("Materia rimossa con successo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "4":
-                    Console.WriteLine("Inserisci l'ID della materia da modificare:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaModificare))
-                    {
-                        var materieList = repository.GetAll();
-                        var materiaDaModificare = materieList.FirstOrDefault(m => m.IdMateria == idDaModificare);
-                        if (materiaDaModificare != null)
+                switch (scelta)
+                {
+                    case "1":
+                        var studenti = studenteRepo.GetByClasse(classe.IdClasse);
+                        if (studenti.Count == 0)
                         {
-                            Console.WriteLine("Nuovo nome della materia:");
-                            materiaDaModificare.Nome = Console.ReadLine();
-                            repository.Modify(materiaDaModificare);
-                            Console.WriteLine("Materia modificata con successo.");
+                            Console.WriteLine(" Nessuno studente presente in questa classe.");
                         }
                         else
                         {
-                            Console.WriteLine("Materia non trovata.");
+                            foreach (var s in studenti)
+                                Console.WriteLine($"Id: {s.Id}, Nome: {s.Nome} {s.Cognome}");
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "5":
-                    return;
-                default:
-                    Console.WriteLine("Opzione non valida. Riprova.");
-                    break;
+                        break;
+                    case "2":
+                        Console.Write("Nome: ");
+                        var nome = Console.ReadLine();
+                        Console.Write("Cognome: ");
+                        var cognome = Console.ReadLine();
+                        Console.Write("Data di nascita (aaaa-mm-gg): ");
+                        var data = DateTime.Parse(Console.ReadLine());
+                        studenteRepo.Add(new Studente { Nome = nome, Cognome = cognome, DataNascita = data, IdClasse = classe.IdClasse });
+                        Console.WriteLine("Studente aggiunto.");
+                        break;
+                    case "3":
+                        Console.Write("Id studente da modificare: ");
+                        var idMod = int.Parse(Console.ReadLine());
+                        Console.Write("Nuovo nome: ");
+                        var nomeMod = Console.ReadLine();
+                        Console.Write("Nuovo cognome: ");
+                        var cognomeMod = Console.ReadLine();
+                        Console.Write("Nuova data di nascita (aaaa-mm-gg): ");
+                        var dataMod = DateTime.Parse(Console.ReadLine());
+                        studenteRepo.Modify(new Studente { Id = idMod, Nome = nomeMod, Cognome = cognomeMod, DataNascita = dataMod, IdClasse = classe.IdClasse });
+                        Console.WriteLine("Studente modificato.");
+                        break;
+                    case "4":
+                        Console.Write("Id studente da eliminare: ");
+                        var idElim = int.Parse(Console.ReadLine());
+                        Console.WriteLine("ATTENZIONE: L'eliminazione dello studente comporterà la cancellazione dei voti associati. Continuare? (s/n)");
+                        var conferma = Console.ReadLine();
+                        if (conferma?.ToLower() == "s")
+                        {
+                            studenteRepo.Remove(idElim);
+                            Console.WriteLine("Studente eliminato.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Eliminazione annullata.");
+                        }
+                        break;
+                    case "5":
+                        Console.Write("Id studente da selezionare: ");
+                        var idSel = int.Parse(Console.ReadLine());
+                        var studente = studenteRepo.GetById(idSel);
+                        if (studente == null || studente.IdClasse != classe.IdClasse)
+                        {
+                            Console.WriteLine("Studente non trovato nella classe selezionata.");
+                            break;
+                        }
+                        GestisciVoti(votoRepo, materiaRepo, studente);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Scelta non valida.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            Console.WriteLine("Premi un tasto per continuare...");
+            Console.ReadKey();
         }
     }
 
-    static void GestisciVoti(VotoRepository repository)
+    static void GestisciVoti(VotoRepository votoRepo, MateriaRepository materiaRepo, Studente studente)
     {
         while (true)
         {
-            Console.WriteLine("\n--- Gestione Voti ---");
-            Console.WriteLine("1. Aggiungi un voto");
-            Console.WriteLine("2. Visualizza tutti i voti");
-            Console.WriteLine("3. Rimuovi un voto");
-            Console.WriteLine("4. Modifica un voto");
-            Console.WriteLine("5. Torna al menu principale");
-            Console.WriteLine("Inserisci un'opzione:");
+            Console.Clear();
+            Console.WriteLine($"===== GESTIONE VOTI - Studente {studente.Nome} {studente.Cognome} =====");
+            Console.WriteLine("1. Visualizza Voti");
+            Console.WriteLine("2. Aggiungi Voto");
+            Console.WriteLine("3. Modifica Voto");
+            Console.WriteLine("4. Elimina Voto");
+            Console.WriteLine("0. Torna indietro");
+            Console.Write("Scelta: ");
 
-            var input = Console.ReadLine();
-            switch (input)
+            var scelta = Console.ReadLine();
+            try
             {
-                case "1":
-                    Console.WriteLine("Valore (decimale):");
-                    float valore = float.Parse(Console.ReadLine());
-                    Console.WriteLine("StudenteId:");
-                    int studenteId = int.Parse(Console.ReadLine());
-                    Console.WriteLine("MateriaId:");
-                    int materiaId = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Data (yyyy-MM-dd):");
-                    DateTime data = DateTime.Parse(Console.ReadLine());
-                    var nuovoVoto = new Voto { Valore = valore, StudenteId = studenteId, MateriaId = materiaId, Data = data };
-                    repository.Add(nuovoVoto);
-                    Console.WriteLine("Voto aggiunto con successo.");
-                    break;
-                case "2":
-                    var voti = repository.GetAll();
-                    Console.WriteLine("Elenco dei voti:");
-                    foreach (var voto in voti)
-                    {
-                        Console.WriteLine($"ID: {voto.Id}, Valore: {voto.Valore}, StudenteId: {voto.StudenteId}, MateriaId: {voto.MateriaId}, Data: {voto.Data:yyyy-MM-dd}");
-                    }
-                    break;
-                case "3":
-                    Console.WriteLine("Inserisci l'ID del voto da rimuovere:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaRimuovere))
-                    {
-                        repository.Remove(idDaRimuovere);
-                        Console.WriteLine("Voto rimosso con successo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "4":
-                    Console.WriteLine("Inserisci l'ID del voto da modificare:");
-                    if (int.TryParse(Console.ReadLine(), out int idDaModificare))
-                    {
-                        var votoDaModificare = repository.GetById(idDaModificare);
-                        if (votoDaModificare != null)
+                switch (scelta)
+                {
+                    case "1":
+                        var voti = votoRepo.GetVotiConMateriaPerStudente(studente.Id);
+                        if (voti.Count == 0)
                         {
-                            Console.WriteLine("Nuovo valore (decimale):");
-                            votoDaModificare.Valore = float.Parse(Console.ReadLine());
-                            Console.WriteLine("Nuovo StudenteId:");
-                            votoDaModificare.StudenteId = int.Parse(Console.ReadLine());
-                            Console.WriteLine("Nuovo MateriaId:");
-                            votoDaModificare.MateriaId = int.Parse(Console.ReadLine());
-                            Console.WriteLine("Nuova data (yyyy-MM-dd):");
-                            votoDaModificare.Data = DateTime.Parse(Console.ReadLine());
-                            repository.Modify(votoDaModificare);
-                            Console.WriteLine("Voto modificato con successo.");
+                            Console.WriteLine(" Nessun voto assegnato a questo studente.");
                         }
                         else
                         {
-                            Console.WriteLine("Voto non trovato.");
+
+                            foreach (var v in voti)
+                                Console.WriteLine($"Id: {v.Id}, Valore: {v.Valore}, Materia: {v.NomeMateria}, Data: {v.Data.ToShortDateString()}");
+
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("ID non valido.");
-                    }
-                    break;
-                case "5":
-                    return;
-                default:
-                    Console.WriteLine("Opzione non valida. Riprova.");
-                    break;
+                        break;
+                    case "2":
+                        var materie = materiaRepo.GetAll();
+                        if (materie.Count == 0)
+                        {
+                            Console.WriteLine("Non ci sono materie disponibili. Devi prima creare almeno una materia.");
+                            Console.WriteLine("Vuoi creare una materia ora? (S/N)");
+                            string risposta = Console.ReadLine().ToUpper();
+                            if (risposta == "S")
+                            {
+                                GestisciMaterie(materiaRepo);
+                            }
+                            return;
+                        }
+                        else
+                        {
+                            foreach (var m in materie)
+                                Console.WriteLine($"Id: {m.IdMateria}, Nome: {m.Nome}");
+                            Console.Write("Id materia: ");
+                            var idMateria = int.Parse(Console.ReadLine());
+                            Console.Write("Valore voto: ");
+                            var valore = float.Parse(Console.ReadLine());
+                            Console.Write("Data (aaaa-mm-gg): ");
+                            var data = DateTime.Parse(Console.ReadLine());
+                            votoRepo.Add(new Voto { MateriaId = idMateria, Valore = valore, Data = data, StudenteId = studente.Id });
+                            Console.WriteLine("Voto aggiunto.");
+
+                        }
+                        
+                        break;
+                    case "3":
+                        Console.Write("Id voto da modificare: ");
+                        var idMod = int.Parse(Console.ReadLine());
+                        Console.Write("Nuovo valore: ");
+                        var nuovoValore = float.Parse(Console.ReadLine());
+                        Console.Write("Nuova data (aaaa-mm-gg): ");
+                        var nuovaData = DateTime.Parse(Console.ReadLine());
+                        votoRepo.Modify(new Voto { Id = idMod, Valore = nuovoValore, Data = nuovaData, StudenteId = studente.Id });
+                        Console.WriteLine("Voto modificato.");
+                        break;
+                    case "4":
+                        Console.Write("Id voto da eliminare: ");
+                        var idElim = int.Parse(Console.ReadLine());
+                        votoRepo.Remove(idElim);
+                        Console.WriteLine("Voto eliminato.");
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Scelta non valida.");
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            Console.WriteLine("Premi un tasto per continuare...");
+            Console.ReadKey();
         }
     }
+
 }

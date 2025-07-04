@@ -35,6 +35,12 @@ namespace ProgettoScrum.Repositories.Implementations
             if (classe == null)
                 throw new ArgumentNullException(nameof(classe), "La classe non può essere nulla.");
 
+            if (ExistsByAnnoSezione(classe.Anno, classe.Sezione))
+                throw new InvalidOperationException("Classe già presente con stesso Anno e Sezione.");
+
+            if (classe == null)
+                throw new ArgumentNullException(nameof(classe), "La classe non può essere nulla.");
+
             try
             {
                 using var connection = new SqlConnection(ConnectionString);
@@ -54,6 +60,21 @@ namespace ProgettoScrum.Repositories.Implementations
             {
                 throw new Exception("Errore durante l'inserimento della classe nel database.", ex);
             }
+        }
+
+
+        private bool ExistsByAnnoSezione(int anno, string sezione)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            string query = "SELECT COUNT(1) FROM Classi WHERE Anno = @Anno AND Sezione = @Sezione";
+            using var cmd = new SqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@Anno", anno);
+            cmd.Parameters.AddWithValue("@Sezione", sezione);
+
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
         }
 
         public List<Classe> GetAll()
@@ -201,6 +222,20 @@ namespace ProgettoScrum.Repositories.Implementations
             {
                 throw new Exception($"Errore durante il recupero della classe con ID {id}.", ex);
             }
+        }
+
+        public bool ExistsByNome(string nomeClasse)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            string query = "SELECT COUNT(1) FROM Classi WHERE Nome = @Nome";
+
+            using var cmd = new SqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@Nome", nomeClasse);
+
+            int count = (int)cmd.ExecuteScalar();
+            return count > 0;
         }
 
     }
