@@ -387,7 +387,20 @@ public class Program
                                 Console.WriteLine("Id materia non valido.");
                                 return;
                             }
-                           // var idMateria = int.Parse(Console.ReadLine());
+                            // var idMateria = int.Parse(Console.ReadLine());
+
+                            var materiaEsiste = materie.Any(m => m.IdMateria == idMateria);
+                            if (!materiaEsiste)
+                            {
+                                Console.WriteLine("La materia con l'ID indicato non esiste.");
+                                Console.WriteLine("Vuoi crearne una nuova ora? (S/N)");
+                                string risposta = Console.ReadLine().ToUpper();
+                                if (risposta == "S")
+                                {
+                                    GestisciMaterie(materiaRepo);
+                                }
+                                return;
+                            }
 
                             Console.Write("Valore voto: ");
                             if (float.TryParse(Console.ReadLine(), out float valore) == false || valore < 0 || valore > 10)
