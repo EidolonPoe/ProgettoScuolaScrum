@@ -382,11 +382,27 @@ public class Program
                             foreach (var m in materie)
                                 Console.WriteLine($"Id: {m.IdMateria}, Nome: {m.Nome}");
                             Console.Write("Id materia: ");
-                            var idMateria = int.Parse(Console.ReadLine());
+                            if(int.TryParse(Console.ReadLine(), out int idMateria) == false || idMateria <= 0)
+                            {
+                                Console.WriteLine("Id materia non valido.");
+                                return;
+                            }
+                           // var idMateria = int.Parse(Console.ReadLine());
+
                             Console.Write("Valore voto: ");
-                            var valore = float.Parse(Console.ReadLine());
+                            if (float.TryParse(Console.ReadLine(), out float valore) == false || valore < 0 || valore > 10)
+                            {
+                                Console.WriteLine("Valore voto non valido. Deve essere un numero tra 0 e 10.");
+                                return;
+                            }
+                            //var valore = float.Parse(Console.ReadLine());
                             Console.Write("Data (aaaa-mm-gg): ");
-                            var data = DateTime.Parse(Console.ReadLine());
+                            if (DateTime.TryParse(Console.ReadLine(), out DateTime data) == false)
+                            {
+                                Console.WriteLine("Data non valida. Usa il formato aaaa-mm-gg.");
+                                return;
+                            }
+                            //var data = DateTime.Parse(Console.ReadLine());
                             votoRepo.Add(new Voto { MateriaId = idMateria, Valore = valore, Data = data, StudenteId = studente.Id });
                             Console.WriteLine("Voto aggiunto.");
 
