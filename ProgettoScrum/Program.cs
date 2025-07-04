@@ -19,12 +19,14 @@ public class Program
 
         while (true)
         {
+
             Console.Clear();
             Console.WriteLine("===== MENU PRINCIPALE =====");
             Console.WriteLine("1. Gestione Classi");
             Console.WriteLine("2. Gestione Materie");
             Console.WriteLine("0. Esci");
             Console.Write("Scelta: ");
+
 
             var scelta = Console.ReadLine();
             try
@@ -58,6 +60,7 @@ public class Program
     {
         while (true)
         {
+
             Console.Clear();
             Console.WriteLine("===== GESTIONE CLASSI =====");
             Console.WriteLine("1. Visualizza Classi");
@@ -67,6 +70,8 @@ public class Program
             Console.WriteLine("5. Seleziona Classe per Gestione Studenti");
             Console.WriteLine("0. Torna al menu principale");
             Console.Write("Scelta: ");
+
+
 
             var scelta = Console.ReadLine();
             try
@@ -151,6 +156,7 @@ public class Program
     {
         while (true)
         {
+
             Console.Clear();
             Console.WriteLine("===== GESTIONE MATERIE =====");
             Console.WriteLine("1. Visualizza Materie");
@@ -159,6 +165,8 @@ public class Program
             Console.WriteLine("4. Elimina Materia");
             Console.WriteLine("0. Torna al menu principale");
             Console.Write("Scelta: ");
+
+
 
             var scelta = Console.ReadLine();
             try
@@ -228,6 +236,7 @@ public class Program
     {
         while (true)
         {
+
             Console.Clear();
             Console.WriteLine($"===== GESTIONE STUDENTI - Classe {classe.Anno} {classe.Sezione} =====");
             Console.WriteLine("1. Visualizza Studenti");
@@ -237,6 +246,7 @@ public class Program
             Console.WriteLine("5. Seleziona Studente per Gestione Voti");
             Console.WriteLine("0. Torna indietro");
             Console.Write("Scelta: ");
+
 
             var scelta = Console.ReadLine();
             try
@@ -324,6 +334,7 @@ public class Program
     {
         while (true)
         {
+
             Console.Clear();
             Console.WriteLine($"===== GESTIONE VOTI - Studente {studente.Nome} {studente.Cognome} =====");
             Console.WriteLine("1. Visualizza Voti");
@@ -332,6 +343,7 @@ public class Program
             Console.WriteLine("4. Elimina Voto");
             Console.WriteLine("0. Torna indietro");
             Console.Write("Scelta: ");
+
 
             var scelta = Console.ReadLine();
             try

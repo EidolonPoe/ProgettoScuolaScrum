@@ -1,0 +1,70 @@
+Descrizione del Prodotto
+L’applicazione "Gestione Scuola" è uno strumento semplice e veloce per gestire le informazioni relative a studenti, classi scolastiche e voti. Funziona tramite un menu sul terminale che consente di eseguire operazioni come aggiungere studenti, creare classi, inserire voti e visualizzare i dati salvati.
+L'app è pensata per essere usata da un amministratore scolastico o un segretario, direttamente dal computer.
+
+Gestione Studenti
+Permette di:
+Aggiungere un nuovo studente 
+Visualizzare tutti gli studenti registrati
+Modificare i dati di uno studente
+Cancellare uno studente dal sistema
+*Nota: Ogni studente può essere associato a una classe.
+
+Gestione Classi
+Permette di:
+Creare una nuova classe (es: “1A”, “3B”)
+Visualizzare le classi esistenti
+Modificare il nome o l’anno scolastico di una classe
+Eliminare una classe
+*Nota: L’anno e sezione della classe sono un attributo separato dall’ID 
+
+Gestione Voti
+Permette di:
+Inserire un voto per uno studente (es. Matematica: 8.5)
+Visualizzare i voti di uno studente o di una materia
+Modificare un voto già registrato
+Cancellare un voto
+*Nota: I voti sono collegati agli studenti tramite il loro ID.
+Gestione Materie
+Permette di:
+Aggiungere una nuova materia
+Visualizzare tutte le materie registrate
+Modificare una materia già registrata
+Cancellare una materia dal sistema
+*Nota: Ogni studente può essere associato a una classe.
+
+Salvataggio dei Dati
+Tutti i dati inseriti (studenti, classi, voti) vengono salvati automaticamente nel database, quindi non si perdono dopo la chiusura del programma.
+
+USO
+All'avvio del programma, all’utente viene presentato un menu principale nel terminale, con una serie di opzioni numerate. L’interazione avviene digitando il numero corrispondente all’operazione desiderata. Il flusso è progettato per essere intuitivo e guidato.
+L'applicazione mostra un menu con le seguenti opzioni:
+--- MENU ---
+1. Gestisci Classe
+2. Gestisci Studenti
+3. Gestisci Materie
+4. Gestisci Voti
+5. Esci
+
+Ogni opzione permette di accedere a un sottomenu specifico per effettuare operazioni CRUD (Create, Read, Update, Delete) sulla rispettiva entità.
+Il programma rimane in esecuzione in un ciclo continuo fino a quando l'utente seleziona l'opzione "5. Esci".
+Le funzioni sopra consentono rispettivamente la gestione delle entità con messaggi e input da tastiera, rendendo l'applicazione semplice e interattiva da utilizzare anche senza interfaccia grafica.
+Operazioni disponibili selezionando Classe:
+
+--- MENU ---
+1. Aggiungi una classe  
+2. Visualizza tutte le classi  
+3. Rimuovi una classe  
+4. Modifica una classe  
+5. Torna al menu principale 
+
+1. Aggiungi una classe
+ L’utente inserisce il nome della nuova classe (es. “1A”, “3B”). Il sistema crea un nuovo record nel database e conferma l’aggiunta.
+2. Visualizza tutte le classi
+ Il programma mostra a schermo l’elenco completo delle classi presenti nel sistema, con ID univoco, anno e sezione.
+3. Rimuovi una classe
+ Viene richiesto l’ID della classe da eliminare. Se l’ID è valido, la classe viene rimossa dal database.
+4. Modifica una classe
+ L’utente inserisce l’ID della classe da modificare. Se trovata, può digitare un nuovo anno e sezione per la classe e il cambiamento viene salvato.
+5. Torna al menu principale
+Consente all’utente di uscire dalla sezione corrente e tornare al menu principale per eseguire altre operazioni.
